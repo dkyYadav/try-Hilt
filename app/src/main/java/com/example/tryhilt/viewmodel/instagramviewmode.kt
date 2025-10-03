@@ -5,15 +5,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.tryhilt.model.Task
-import com.example.tryhilt.model.TaskDTO
 import com.example.tryhilt.repository.TaskRepository
+import com.example.tryhilt.usecase.GetTasksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 import retrofit2.Callback
 
-@HiltViewModel
+/*@HiltViewModel
 class instagramviewmode @Inject constructor(
     private val repository: TaskRepository
 ): ViewModel() {
@@ -48,6 +52,26 @@ class instagramviewmode @Inject constructor(
                 Log.e("API_FAILURE", errorMessage)
             }
         })
+    }*/
+
+    @HiltViewModel
+    class TaskViewModel @Inject constructor(
+        private val getTasksUseCase: GetTasksUseCase
+    ) : ViewModel() {
+
+        private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+        val tasks = _tasks.asStateFlow()
+
+        private val _error = MutableStateFlow<String?>(null)
+        val error = _error.asStateFlow()
+
+        fun loadTasks(userId: String, taskType: String) {
+            viewModelScope.launch {
+                getTasksUseCase(userId, taskType).collect { result ->
+                    result.onSuccess { _tasks.value = it }
+                        .onFailure { _error.value = it.message }
+                }
+            }
+        }
     }
 
-}

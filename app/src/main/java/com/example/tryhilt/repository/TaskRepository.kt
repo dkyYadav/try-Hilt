@@ -1,14 +1,10 @@
 package com.example.tryhilt.repository
 
 import android.telecom.Call
-import com.example.tryhilt.model.TaskDTO
+import com.example.tryhilt.model.Task
 import com.example.tryhilt.service.ApiService
 import javax.inject.Inject
 
-class TaskRepository @Inject constructor(
-    private val apiService: ApiService
-) {
-    fun getTasks(userId: String, taskType: String): retrofit2.Call<TaskDTO> {
-        return apiService.getTask(userId, taskType)
-    }
+interface TaskRepository {
+   suspend fun getTasks(session_user_id: String, task_platform: String): List<Task>
 }

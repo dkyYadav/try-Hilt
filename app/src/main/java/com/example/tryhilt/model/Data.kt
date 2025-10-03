@@ -1,7 +1,21 @@
+
 package com.example.tryhilt.model
 
 import com.google.gson.annotations.SerializedName
 
+
+data class Task(
+    val id: String,
+    val platform: String,
+    val title: String,
+    val description: String,
+    val icon: String,
+    val reward: String,
+    val buttonText: String,
+    val link: String,
+    val createdAt: String
+)
+/*
 data class Data(
     val created_at: String,
     val task_button_text: String,
@@ -24,3 +38,4 @@ data class Task(
     @SerializedName("task_link") val taskLink: String,
     @SerializedName("created_at") val createdAt: String
 )
+*/
